@@ -64,6 +64,8 @@ export class PlasmicAction {
         return { new_branch };
       case "build":
         const publish_dir = await this.build();
+
+        console.log("Reached Here 5")
         return { publish_dir };
       default:
         throw new Error(`Unknown run action: ${this.args.run}`);
@@ -207,7 +209,12 @@ export class PlasmicAction {
 
         if (this.detectNextVersion() < 14) {
           await exec(`${pm.cmd} next export`, this.opts);
+
+          console.log("Reached Here SHOULD NOT")
         }
+
+
+        console.log("Reached Here 1")
 
         dir = "out";
         break;
@@ -223,11 +230,16 @@ export class PlasmicAction {
         throw new Error(`Unknown platform '${platform}'`);
     }
 
+    console.log("Reached Here 2")
+
     // A .nojekyll file is required to bypass Jekyll processing and publish
     // files and directories that start with underscores, e.g. _next.
     // https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/
     const nojekyllPath = path.join(dir, ".nojekyll");
     await exec(`touch ${nojekyllPath}`, this.opts);
+
+
+    console.log("Reached Here 3")
 
     return dir;
   }
