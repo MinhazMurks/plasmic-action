@@ -204,7 +204,11 @@ export class PlasmicAction {
     switch (platform) {
       case "nextjs":
         await exec(`${pm.cmd} next build`, this.opts);
-        await exec(`${pm.cmd} next export`, this.opts);
+
+        if (this.detectNextVersion() < 14) {
+          await exec(`${pm.cmd} next export`, this.opts);
+        }
+
         dir = "out";
         break;
       case "gatsby":
@@ -247,6 +251,23 @@ export class PlasmicAction {
     }
 
     return "react";
+  }
+
+  detectNextVersion(): number {
+    const packageJson = readFileSync(
+      path.join(this.opts.cwd, "package.json"),
+      "utf8"
+    );
+    const parsedPackageJson = JSON.parse(packageJson);
+
+    if (
+      parsedPackageJson.dependencies.next &&
+      parsedPackageJson.dependencies.next.split["."][0]
+    ) {
+      parseInt(parsedPackageJson.dependencies.next.split["."][0]);
+    }
+
+    return 0;
   }
 
   /**
